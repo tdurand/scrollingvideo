@@ -1,0 +1,212 @@
+define(['jquery',
+        'underscore',
+        'backbone',
+        'models/Stills',
+        'text!templates/streetwalk/streetWalkViewTemplate.html',
+        'text!templates/streetwalk/streetWalkLoadingViewTemplate.html',
+        'howl'
+        ],
+function($, _, Backbone,
+                StillsCollection,
+                streetWalkViewTemplate,
+                streetWalkLoadingViewTemplate){
+
+  var StreetWalkView = Backbone.View.extend({
+
+    el:"#streetwalk",
+    elImg:"#streetwalk .streetwalkImg",
+
+    currentPosition:0,
+    bodyHeight:10000,
+
+    events:{
+        
+    },
+
+    initialize : function(params) {
+        console.log(params);
+
+        var self = this;
+
+        if(params.way === undefined) {
+            self.way = "waytointersection";
+            self.nbImg = "208";
+        }
+        else {
+            self.way = params.way;
+            self.nbImg = params.nbImages;
+        }
+
+        //#streetwalk/waytointersection/208
+        //#streetwalk/intersectionthenroad/460
+        //#streetwalk/uphill/624
+    },
+
+    prepare:function() {
+
+        var self = this;
+
+        self.Stills = new StillsCollection();
+        self.Stills.init({
+            nbStills : parseInt(self.nbImg,10),
+            pathToStills: "data/"+self.way+"/"
+        });
+
+        self.Stills.fetch();
+
+        self.Stills.on("updatePourcentageLoaded", function() {
+            self.updateLoadingIndicator(self.Stills.pourcentageLoaded);
+        });
+
+        self.Stills.on("loadingFinished", function() {
+            self.render();
+        });
+
+        self.renderLoading();
+
+    },
+
+    renderLoading: function() {
+        var self = this;
+
+        self.$el.html(_.template(streetWalkLoadingViewTemplate));
+    },
+
+    updateLoadingIndicator: function(pourcentage) {
+        var self = this;
+        self.$el.find(".loadingIndicator").text(pourcentage);
+    },
+
+    renderImg: function(imgNb) {
+        var self = this;
+
+        if(self.currentStill.id == imgNb) {
+            //no need to render again same still
+            return;
+        }
+
+        self.currentStill = self.Stills.get(imgNb);
+
+        console.log("Render Img NB: " + imgNb + "Loaded : " + self.currentStill.loaded);
+
+        if(!self.currentStill.loaded) {
+            console.log("IMG NB NOT LOADED :" +imgNb);
+
+            function sortNumber(a,b) {
+              return a - b;
+            }
+            //Get closest still loaded : TODO FIND THE BEST ALGORITHM, this one is not so optimized and insert the still in the array
+            self.currentStill = self.Stills.get(self.Stills.stillLoaded.push( imgNb ) && self.Stills.stillLoaded.sort(sortNumber)[ self.Stills.stillLoaded.indexOf( imgNb ) + 1 ]);
+
+
+            console.log("Load IMG NB instead:" +self.currentStill.id);
+        }
+
+        $(self.elImg).attr("src", self.currentStill.get("srcLowRes"));
+
+    },
+
+    renderImgHighRes: function() {
+        var self = this;
+
+        self.currentStill.loadHighRes(function() {
+            $(self.elImg).attr("src", self.currentStill.get("srcHighRes"));
+        });
+
+    },
+
+    render:function() {
+
+        var self = this;
+
+        //render first still
+        self.currentStill = self.Stills.first();
+        var pathFirstStill = self.Stills.first().get("srcLowRes");
+
+        //render high res after 100ms (TODO DUPLICATE)
+        self.highResLoadingInterval = setTimeout(function() {
+            self.renderImgHighRes();
+        },100);
+
+        self.$el.html(_.template(streetWalkViewTemplate,{
+            pathFirstStill:self.currentStill.get("srcLowRes")
+        }));
+
+        self.computeAnimation();
+    },
+
+    renderElements: function(imgNb) {
+
+        var self = this;
+
+        if(imgNb > self.Stills.nbImages-1) {
+            self.$el.find(".chooseWay").show();
+        }
+        else {
+            self.$el.find(".chooseWay").hide();
+        }
+
+    },
+
+    computeAnimation: function() {
+        var self = this;
+
+        //console.log("Compute animation");
+
+        self.targetPosition  = window.scrollY;
+
+        if( Math.floor(self.targetPosition) != Math.floor(self.currentPosition)) {
+            console.log("Compute We have moved : scroll position " + self.currentPosition);
+            var deaccelerate = Math.max( Math.min( Math.abs(self.targetPosition - self.currentPosition) * 5000 , 10 ) , 2 );
+            self.currentPosition += (self.targetPosition - self.currentPosition) / deaccelerate;
+
+
+
+            if(self.targetPosition > self.currentPosition) {
+                self.currentPosition = Math.ceil(self.currentPosition);
+            }
+            else{
+                self.currentPosition = Math.floor(self.currentPosition);
+            }
+
+
+            //Change image
+            var availableHeigth = (self.bodyHeight - window.innerHeight);
+            var imgNb = Math.floor( self.currentPosition / availableHeigth * self.Stills.length);
+
+            //Make sure imgNb is in bounds (on chrome macosx we can scroll more than height (rebound))
+            if(imgNb < 0) { imgNb = 0; }
+            if(imgNb >= self.Stills.length) { imgNb = self.Stills.length-1; }
+
+            //Render image
+            self.renderImg(imgNb);
+
+            //Render elements at this position:
+            self.renderElements(imgNb);
+
+            //Render highres after 100ms
+            clearTimeout(self.highResLoadingInterval);
+            self.highResLoadingInterval = setTimeout(function() {
+                self.renderImgHighRes();
+            },80);
+
+        }
+
+        window.requestAnimationFrame(function() {
+            self.computeAnimation();
+        });
+    },
+
+
+    onClose: function(){
+      //Clean
+      this.undelegateEvents();
+    }
+
+  });
+
+  return StreetWalkView;
+  
+});
+
+

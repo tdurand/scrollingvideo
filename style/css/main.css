@@ -184,4 +184,12 @@ html, body {
   left: 50%;
   top: 50%; }
 
+.arrow-up {
+  width: 200px;
+  fill: white; }
+
+.arrow-right {
+  width: 200px;
+  fill: white; }
+
 /*@ sourceMappingURL=main.css.map */

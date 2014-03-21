@@ -71,8 +71,20 @@ function($, _, Backbone,
 
     renderLoading: function() {
         var self = this;
+        
+        if(self.$el.find(".loadingNextWay").length > 0) {
+            self.$el.find(".loadingNextWay").show();
+            self.$el.find(".streetwalk-title").hide();
+            self.$el.find(".chooseWay").hide();
 
-        self.$el.html(_.template(streetWalkLoadingViewTemplate));
+            self.isFirstWay = false;
+        }
+        else {
+            self.$el.html(_.template(streetWalkLoadingViewTemplate));
+            self.isFirstWay = true;
+        }
+        
+
     },
 
     updateLoadingIndicator: function(pourcentage) {
@@ -105,7 +117,7 @@ function($, _, Backbone,
             console.log("Load IMG NB instead:" +self.currentStill.id);
         }
 
-        if(self.currentStill.get("srcLowRes").indexOf("waytointersection") > 0) {
+        if(!self.isFirstWay && self.currentStill.get("srcLowRes").indexOf("waytointersection") > 0) {
             console.log("coucou");
         }
 
@@ -135,9 +147,11 @@ function($, _, Backbone,
             self.renderImgHighRes();
         },100);
 
-        self.$el.html(_.template(streetWalkViewTemplate,{
-            pathFirstStill:self.currentStill.get("srcLowRes")
-        }));
+        if(self.isFirstWay) {
+            self.$el.html(_.template(streetWalkViewTemplate,{
+                pathFirstStill:self.currentStill.get("srcLowRes")
+            }));
+        }
 
         self.computeAnimation();
     },
@@ -146,7 +160,7 @@ function($, _, Backbone,
 
         var self = this;
 
-        if(imgNb > self.Stills.nbImages-1) {
+        if(imgNb > self.Stills.nbImages-1 && self.isFirstWay) {
             self.$el.find(".chooseWay").show();
         }
         else {

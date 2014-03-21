@@ -72,6 +72,8 @@ function($, _, Backbone,
             self.remove(still);
             //still.clear();
         });
+
+        self.stillLoaded = [];
     }
 
     

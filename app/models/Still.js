@@ -41,7 +41,7 @@ function($, _, Backbone){
 
     },
 
-    clean: function() {
+    clear: function() {
         self.set({
             img: null,
             imgHighRes: null

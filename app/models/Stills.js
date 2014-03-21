@@ -64,6 +64,14 @@ function($, _, Backbone,
     lpad: function(value, padding) {
         var zeroes = new Array(padding+1).join("0");
         return (zeroes + value).slice(-padding);
+    },
+
+    clear: function() {
+        self = this;
+        _.each(self.models,function(still) {
+            self.remove(still);
+            //still.clear();
+        });
     }
 
     

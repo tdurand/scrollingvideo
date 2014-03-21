@@ -60,9 +60,12 @@ function($, _, Backbone,
 
         self.Stills.on("loadingFinished", function() {
             self.render();
+            self.animating = true;
         });
 
         self.renderLoading();
+
+        window.scrollTo(0,0);
 
     },
 
@@ -80,14 +83,14 @@ function($, _, Backbone,
     renderImg: function(imgNb) {
         var self = this;
 
-        if(self.currentStill.id == imgNb) {
+        if(self.currentStill && self.currentStill.id == imgNb) {
             //no need to render again same still
             return;
         }
 
         self.currentStill = self.Stills.get(imgNb);
 
-        console.log("Render Img NB: " + imgNb + "Loaded : " + self.currentStill.loaded);
+        //console.log("Render Img NB: " + imgNb + "Loaded : " + self.currentStill.loaded);
 
         if(!self.currentStill.loaded) {
             console.log("IMG NB NOT LOADED :" +imgNb);
@@ -100,6 +103,10 @@ function($, _, Backbone,
 
 
             console.log("Load IMG NB instead:" +self.currentStill.id);
+        }
+
+        if(self.currentStill.get("srcLowRes").indexOf("waytointersection") > 0) {
+            console.log("coucou");
         }
 
         $(self.elImg).attr("src", self.currentStill.get("srcLowRes"));
@@ -151,12 +158,14 @@ function($, _, Backbone,
     computeAnimation: function() {
         var self = this;
 
+        if(self.animating) {
+ 
         //console.log("Compute animation");
 
         self.targetPosition  = window.scrollY;
 
         if( Math.floor(self.targetPosition) != Math.floor(self.currentPosition)) {
-            console.log("Compute We have moved : scroll position " + self.currentPosition);
+            //console.log("Compute We have moved : scroll position " + self.currentPosition);
             var deaccelerate = Math.max( Math.min( Math.abs(self.targetPosition - self.currentPosition) * 5000 , 10 ) , 2 );
             self.currentPosition += (self.targetPosition - self.currentPosition) / deaccelerate;
 
@@ -193,14 +202,19 @@ function($, _, Backbone,
         }
 
         window.requestAnimationFrame(function() {
+            //console.log(self.way);
             self.computeAnimation();
         });
+
+        }
     },
 
 
     onClose: function(){
       //Clean
       this.undelegateEvents();
+      this.Stills.clear();
+      this.animating = false;
     }
 
   });

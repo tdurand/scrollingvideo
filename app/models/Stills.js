@@ -36,6 +36,8 @@ function($, _, Backbone,
 
                     var still = new Still({
                         id:i,
+                        // srcLowRes:"http://tdurand.github.io/scrollingvideo/"+self.pathToStills+"way"+self.lpad(i, 3)+".jpg",
+                        // srcHighRes:"http://tdurand.github.io/scrollingvideo/"+self.pathToStills+"way"+self.lpad(i, 3)+".jpg"
                         srcLowRes:self.pathToStills+"way"+self.lpad(i, 3)+".jpg",
                         srcHighRes:self.pathToStills+"way"+self.lpad(i, 3)+".jpg"
                     });
@@ -47,7 +49,7 @@ function($, _, Backbone,
                         self.pourcentageLoaded = Math.floor(self.nbImgLoaded*accurate/(self.nbImages+1)*100);
                         self.trigger("updatePourcentageLoaded");
 
-                        if(self.nbImgLoaded >= self.nbImages/accurate) {
+                        if(self.nbImgLoaded == parseInt(self.nbImages/accurate,10)) {
                             self.trigger("loadingFinished");
                         }
                     });

@@ -24,8 +24,6 @@ function($, _, Backbone,
     },
 
     initialize : function(params) {
-        console.log(params);
-
         var self = this;
 
         if(params.way === undefined) {
@@ -36,6 +34,8 @@ function($, _, Backbone,
             self.way = params.way;
             self.nbImg = params.nbImages;
         }
+
+        console.log(params);
 
         //#streetwalk/waytointersection/208
         //#streetwalk/intersectionthenroad/460
@@ -59,8 +59,8 @@ function($, _, Backbone,
         });
 
         self.Stills.on("loadingFinished", function() {
-            self.render();
             self.animating = true;
+            self.render();
         });
 
         self.renderLoading();
@@ -208,10 +208,10 @@ function($, _, Backbone,
             self.renderElements(imgNb);
 
             //Render highres after 100ms
-            clearTimeout(self.highResLoadingInterval);
-            self.highResLoadingInterval = setTimeout(function() {
-                self.renderImgHighRes();
-            },80);
+            // clearTimeout(self.highResLoadingInterval);
+            // self.highResLoadingInterval = setTimeout(function() {
+            //     self.renderImgHighRes();
+            // },80);
 
         }
 

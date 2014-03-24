@@ -46,6 +46,8 @@ function($, _, Backbone,
 
         var self = this;
 
+        self.firstScroll = true;
+
         self.Stills = new StillsCollection();
         self.Stills.init({
             nbStills : parseInt(self.nbImg,10),
@@ -111,7 +113,7 @@ function($, _, Backbone,
               return a - b;
             }
             //Get closest still loaded : TODO FIND THE BEST ALGORITHM, this one is not so optimized and insert the still in the array
-            self.currentStill = self.Stills.get(self.Stills.stillLoaded.push( imgNb ) && self.Stills.stillLoaded.sort(sortNumber)[ self.Stills.stillLoaded.indexOf( imgNb ) + 1 ]);
+            self.currentStill = self.Stills.get(self.Stills.stillLoaded.push( imgNb ) && self.Stills.stillLoaded.sort(sortNumber)[ self.Stills.stillLoaded.indexOf( imgNb ) - 1 ]);
 
 
             console.log("Load IMG NB instead:" +self.currentStill.id);
@@ -138,6 +140,10 @@ function($, _, Backbone,
 
         var self = this;
 
+        if(!self.isFirstWay) {
+            self.$el.find(".loadingNextWay").hide();
+        }
+
         //render first still
         self.currentStill = self.Stills.first();
         var pathFirstStill = self.Stills.first().get("srcLowRes");
@@ -160,12 +166,20 @@ function($, _, Backbone,
 
         var self = this;
 
+        if(self.firstScroll && imgNb > 1) {
+            self.firstScroll = false;
+        }
+
         if(imgNb > self.Stills.nbImages-1 && self.isFirstWay) {
+            self.$el.find(".chooseWay").show();
+        }
+        else if(!self.firstScroll && !self.isFirstWay && imgNb === 0) {
             self.$el.find(".chooseWay").show();
         }
         else {
             self.$el.find(".chooseWay").hide();
         }
+
 
     },
 

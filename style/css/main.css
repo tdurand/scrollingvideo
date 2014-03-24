@@ -139,6 +139,20 @@ html, body {
     font-size: 4rem;
     text-align: center; }
 
+.loadingNextWay h1 {
+  color: white;
+  font-size: 4rem;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /*transform*/
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); }
+
 .streetwalkImg, .element-fixed {
   position: fixed;
   top: 0;

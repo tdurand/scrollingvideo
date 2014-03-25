@@ -18,6 +18,7 @@ function($, _, Backbone,
 
         self.nbImgLoaded = 0;
         self.pourcentageLoaded = 0;
+        self.loadingStopped = false;
         self.stillLoaded = [];
     },
 
@@ -30,6 +31,10 @@ function($, _, Backbone,
         $.each([20,10,5,2,1], function(index, val) {
 
             for (var i = 0; i <= self.nbImages; i+=val) {
+
+                if(self.loadingStopped) {
+                    break;
+                }
 
                 //If still isn't yet loaded
                 if(self.get(i) === undefined) {
@@ -70,6 +75,8 @@ function($, _, Backbone,
 
     clear: function() {
         self = this;
+        self.loadingStopped = true;
+        window.stop();
         _.each(self.models,function(still) {
             self.remove(still);
             //still.clear();

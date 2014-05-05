@@ -57,7 +57,7 @@
     }
 }
 
-.streetwalkImg,.element-fixed {
+.streetwalkImg,.element-fixed,.blurImg {
     position: fixed;
     top:0;
     bottom:0;
@@ -103,20 +103,39 @@
     background-size: contain;
 }
 
-
-
-.chooseWay {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-}
-
-.arrow-up {
+.arrow {
     width: 200px;
     fill:white;
 }
 
-.arrow-right {
-     width: 200px;
-     fill:white;
+.chooseWayContent {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /*transform*/
+    -webkit-transform:translate(-50%, -50%);
+       -moz-transform:translate(-50%, -50%);
+        -ms-transform:translate(-50%, -50%);
+         -o-transform:translate(-50%, -50%);
+            transform:translate(-50%, -50%);
+}
+
+.negra img {
+    bottom:0px;
+    right: 5px;
+    position: absolute;
+}
+
+.trame-video {
+    background: url("../../images/trame-video.png") repeat;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    -webkit-transition: opacity 0.5s ease;
+    opacity: 1;
+}
+
+body.not-moving .trame-video {
+    opacity: 0;
+    -webkit-transition: opacity 0.5s ease;
 }

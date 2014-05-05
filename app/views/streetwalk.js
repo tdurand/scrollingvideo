@@ -27,8 +27,8 @@ function($, _, Backbone,
         var self = this;
 
         if(params.way === undefined) {
-            self.way = "waytointersection";
-            self.nbImg = "208";
+            self.way = "waycentro1";
+            self.nbImg = "403";
         }
         else {
             self.way = params.way;
@@ -40,6 +40,10 @@ function($, _, Backbone,
         //#streetwalk/waytointersection/208
         //#streetwalk/intersectionthenroad/460
         //#streetwalk/uphill/624
+        
+        //#streetwalk/waycentro1/403
+        //#streetwalk/waycentro12/851
+        //#streetwalk/waycentro13/765
     },
 
     prepare:function() {
@@ -180,6 +184,13 @@ function($, _, Backbone,
             self.$el.find(".chooseWay").hide();
         }
 
+        if(!self.isFirstWay && imgNb >= 334) {
+            self.$el.find(".negra").show();
+        }
+        else {
+            self.$el.find(".negra").hide();
+        }
+
 
     },
 
@@ -218,14 +229,20 @@ function($, _, Backbone,
             //Render image
             self.renderImg(imgNb);
 
+            //Blur img
+            //stackBlurImage( 'streetwalkImg', 'blurImg', 7, false );
+            //boxBlurImage("streetwalkImg","blurImg",2);
+            
             //Render elements at this position:
             self.renderElements(imgNb);
+            $("body").removeClass('not-moving');
 
             //Render highres after 100ms
-            // clearTimeout(self.highResLoadingInterval);
-            // self.highResLoadingInterval = setTimeout(function() {
-            //     self.renderImgHighRes();
-            // },80);
+            clearTimeout(self.highResLoadingInterval);
+            self.highResLoadingInterval = setTimeout(function() {
+                self.renderImgHighRes();
+                $("body").addClass('not-moving');
+            },80);
 
         }
 

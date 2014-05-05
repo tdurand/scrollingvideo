@@ -44,7 +44,7 @@ function($, _, Backbone,
                         // srcLowRes:"http://tdurand.github.io/scrollingvideo/"+self.pathToStills+"way"+self.lpad(i, 3)+".jpg",
                         // srcHighRes:"http://tdurand.github.io/scrollingvideo/"+self.pathToStills+"way"+self.lpad(i, 3)+".jpg"
                         srcLowRes:self.pathToStills+"way"+self.lpad(i, 3)+".jpg",
-                        srcHighRes:self.pathToStills+"way"+self.lpad(i, 3)+".jpg"
+                        srcHighRes:self.pathToStills+"/highres/way"+self.lpad(i, 3)+".jpg"
                     });
 
                     still.on("imgloaded", function() {

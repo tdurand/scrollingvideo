@@ -153,7 +153,7 @@ html, body {
   -o-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%); }
 
-.streetwalkImg, .element-fixed {
+.streetwalkImg, .element-fixed, .blurImg {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -193,17 +193,36 @@ html, body {
   background: url("../../data/streetwalk/icon/close.png") no-repeat 100% 100%;
   background-size: contain; }
 
-.chooseWay {
-  position: fixed;
+.arrow {
+  width: 200px;
+  fill: white; }
+
+.chooseWayContent {
+  position: absolute;
   left: 50%;
-  top: 50%; }
+  top: 50%;
+  /*transform*/
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); }
 
-.arrow-up {
-  width: 200px;
-  fill: white; }
+.negra img {
+  bottom: 0px;
+  right: 5px;
+  position: absolute; }
 
-.arrow-right {
-  width: 200px;
-  fill: white; }
+.trame-video {
+  background: url("../../images/trame-video.png") repeat;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  -webkit-transition: opacity 0.5s ease;
+  opacity: 1; }
+
+body.not-moving .trame-video {
+  opacity: 0;
+  -webkit-transition: opacity 0.5s ease; }
 
 /*@ sourceMappingURL=main.css.map */
